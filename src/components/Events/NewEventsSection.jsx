@@ -7,8 +7,8 @@ import { fetchEvents } from '../../util/http.js';
 export default function NewEventsSection() {
 
   const { data, isError, error, isPending } = useQuery({
-    queryKey: ['events'],
-    queryFn: fetchEvents,
+    queryKey: ['events', { max: 3 }],
+    queryFn: ({signal, queryKey}) => fetchEvents({signal, ...queryKey[1]}),
     staleTime: 5000,
   });
   let content;
@@ -22,7 +22,6 @@ export default function NewEventsSection() {
       <ErrorBlock title="An error occurred" message={error.info?.message || 'Failed to fetch events'} />
     );
   }
-  console.log(data);
   
   if (data) {
     content = (
